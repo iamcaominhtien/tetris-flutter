@@ -129,7 +129,7 @@ class MyTetrisProvider extends ChangeNotifier {
   List<int> moveBlockToLeft() {
     var newBlock = List<int>.from(currentBlock['block']);
     for (int i = 0; i < newBlock.length; i++) {
-      if (newBlock[i] % 10 == 0) {
+      if (newBlock[i] % Constant.numberOfGridCol == 0) {
         return newBlock;
       } else {
         if (newBlock[i] - 1 >= 0 &&
@@ -147,7 +147,7 @@ class MyTetrisProvider extends ChangeNotifier {
   List<int> moveBlockToRight() {
     var newBlock = List<int>.from(currentBlock['block']);
     for (int i = 0; i < newBlock.length; i++) {
-      if ((newBlock[i] + 1) % 10 == 0) {
+      if ((newBlock[i] + 1) % Constant.numberOfGridCol == 0) {
         return newBlock;
       } else {
         if (newBlock[i] + 1 >= 0 &&
@@ -162,6 +162,72 @@ class MyTetrisProvider extends ChangeNotifier {
     return newBlock;
   }
 
+  void clearRow() {
+    //Duyệt qua từng hàng: từ dưới lên (cao đến thấp)
+    for (int i = Constant.numberOfGridRow - 1; i >= 0; i--) {
+      debugPrint("loop i");
+
+      //Kiểm tra có đủ số cột hay không (numberOfGridCol)
+      int check = 0;
+      for (int j = 0; j < Constant.numberOfGridCol; j++) {
+        debugPrint("loop j");
+        int index = i * Constant.numberOfGridCol + j;
+        if (listOfSquare[index].color != Colors.black) {
+          check++;
+        }
+      }
+
+      debugPrint("Xoa hang");
+      //xóa hàng khi đủ 1 hàng
+      if (check == Constant.numberOfGridCol) {
+        //Cập nhật lại điểm số
+        point++;
+        var listRemoveBlock = [];
+
+        //Duyệt qua từng khối
+        for (int k = 0; k < listOfLandedBlock.length; k++) {
+          List<int> block = List<int>.from(listOfLandedBlock[k]['block']);
+
+          //Xóa các ô cùng hàng với hàng cần xóa
+          for (int j = block.length - 1; j >= 0; j--) {
+            if ((block[j] ~/ Constant.numberOfGridCol) == i) {
+              block.removeAt(j);
+            }
+          }
+
+          //Đẩy các ô nằm trên hàng cần xóa xuống 1 hàng
+          for (int j = 0; j < block.length; j++) {
+            if ((block[j] ~/ Constant.numberOfGridCol) < i) {
+              block[j] += Constant.numberOfGridCol;
+            }
+          }
+
+          //Nếu khối rỗng thì xóa luôn
+          if (block.isEmpty) {
+            listRemoveBlock.add(k);
+          } else {
+            //Cập nhật lại khối
+            listOfLandedBlock[k]['block'] = block;
+          }
+        }
+
+        //Xóa khối
+        for (int l = listRemoveBlock.length - 1; l >= 0; l--) {
+          listOfLandedBlock.removeAt(listRemoveBlock[l]);
+        }
+
+        resetGridTable();
+        i++;
+      } else if (check == 0) {
+        break;
+      }
+    }
+
+    resetGridTable();
+    notifyListeners();
+    debugPrint("check clear row");
+  }
+
   void rotateBlock() {
     int type = currentBlock['type'];
     List<int> block = List.from(currentBlock['block']);
@@ -172,10 +238,10 @@ class MyTetrisProvider extends ChangeNotifier {
       //        x x
 
       List<List<int>> listRotate = [
-        [2, 10, 1, 9],
-        [8, 0, 9, 1],
-        [-9, -1, -10, -2],
-        [-1, -9, 0, -8],
+        [2, Constant.numberOfGridCol, 1, Constant.numberOfGridCol - 1],
+        [Constant.numberOfGridCol - 2, 0, Constant.numberOfGridCol - 1, 1],
+        [-Constant.numberOfGridCol + 1, -1, -Constant.numberOfGridCol, -2],
+        [-1, -Constant.numberOfGridCol + 1, 0, -Constant.numberOfGridCol + 2],
       ];
       for (int i = 0; i < block.length; i++) {
         block[i] += listRotate[rotate][i];
@@ -187,8 +253,9 @@ class MyTetrisProvider extends ChangeNotifier {
       if (rotate % 2 != 0) {
         for (int i = 0; i < block.length; i++) {
           if (block[i] < 0 ||
-              block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol)
+              block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
             return;
+          }
         }
 
         var listCheck = [];
@@ -209,12 +276,15 @@ class MyTetrisProvider extends ChangeNotifier {
       } else {
         //horizontal block
         for (int i = 0; i < block.length; i++) {
-          if (block[i] < 0 || block[i] >= Constant.numberOfGridRow * 10) return;
+          if (block[i] < 0 ||
+              block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+            return;
+          }
         }
 
         var listCheck = [];
         for (var item in block) {
-          var temp = item % 10;
+          var temp = item % Constant.numberOfGridCol;
           if (listCheck.contains(temp) == false) {
             listCheck.add(temp);
           }
@@ -236,10 +306,20 @@ class MyTetrisProvider extends ChangeNotifier {
       //    x
       //    x x
       List<List<int>> listRotate = [
-        [9, 0, -9, -2],
-        [-10, -10, -1, 1],
-        [10, 10, 1, -19],
-        [-9, 0, 9, 20],
+        [Constant.numberOfGridCol - 1, 0, -Constant.numberOfGridCol + 1, -2],
+        [-Constant.numberOfGridCol, -Constant.numberOfGridCol, -1, 1],
+        [
+          Constant.numberOfGridCol,
+          Constant.numberOfGridCol,
+          1,
+          -2 * Constant.numberOfGridCol + 1
+        ],
+        [
+          -Constant.numberOfGridCol + 1,
+          0,
+          Constant.numberOfGridCol - 1,
+          2 * Constant.numberOfGridCol
+        ],
       ];
 
       for (int i = 0; i < block.length; i++) {
@@ -248,12 +328,15 @@ class MyTetrisProvider extends ChangeNotifier {
       rotate = (rotate + 1) % 4;
 
       for (int i = 0; i < block.length; i++) {
-        if (block[i] < 0 || block[i] >= Constant.numberOfGridRow * 10) return;
+        if (block[i] < 0 ||
+            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+          return;
+        }
       }
 
       var listCheck = [];
       for (var item in block) {
-        var temp = item % 10;
+        var temp = item % (Constant.numberOfGridCol);
         if (listCheck.contains(temp) == false) {
           listCheck.add(temp);
         }
@@ -271,43 +354,87 @@ class MyTetrisProvider extends ChangeNotifier {
       //      x
 
       if (rotate == 0) {
-        block[0] += 9;
+        block[0] += (Constant.numberOfGridCol - 1);
         for (int i = 1; i < block.length; i++) {
           block[i] = block[i - 1] + 1;
         }
         rotate = 1;
       } else if (rotate == 1) {
-        block[0] -= 8;
+        block[0] -= (Constant.numberOfGridCol - 2);
         for (int i = 1; i < block.length; i++) {
-          block[i] = block[i - 1] + 10;
+          block[i] = block[i - 1] + Constant.numberOfGridCol;
         }
         rotate = 2;
       } else if (rotate == 2) {
-        block[0] += 18;
+        block[0] += (2 * Constant.numberOfGridCol - 2);
         for (int i = 1; i < block.length; i++) {
           block[i] = block[i - 1] + 1;
         }
         rotate = 3;
       } else {
-        block[0] -= 19;
+        block[0] -= (2 * Constant.numberOfGridCol - 1);
         for (int i = 1; i < block.length; i++) {
-          block[i] = block[i - 1] + 10;
+          block[i] = block[i - 1] + Constant.numberOfGridCol;
         }
         rotate = 0;
       }
 
       //check valid block
+      for (int i = 0; i < block.length; i++) {
+        if (block[i] < 0 ||
+            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+          return;
+        }
+      }
+
       //vertical
-      if (block[1] - block[0] == 10) {
+      if (block[1] - block[0] == Constant.numberOfGridCol) {
         if (block[0] < 0 ||
-            block[block.length - 1] >= Constant.numberOfGridRow * 10) return;
+            block[block.length - 1] >=
+                Constant.numberOfGridRow * Constant.numberOfGridCol) return;
       } else {
         //horizontal
-        int currentRow = block[0] ~/ 10;
+        int currentRow = block[0] ~/ Constant.numberOfGridCol;
         for (int i = 1; i < block.length; i++) {
-          if (currentRow != (block[i] ~/ 10)) {
+          if (currentRow != (block[i] ~/ Constant.numberOfGridCol)) {
             return;
           }
+        }
+      }
+    } else if (type == 4) {
+      // 2:   x
+      //      x
+      //    x x
+      List<List<int>> listRotate = [
+        [-1, -1, -Constant.numberOfGridCol + 1, -Constant.numberOfGridCol + 1],
+        [1, -Constant.numberOfGridCol + 2, 0, Constant.numberOfGridCol - 1],
+        [Constant.numberOfGridCol - 1, Constant.numberOfGridCol - 1, 1, 1],
+        [-Constant.numberOfGridCol + 1, 0, Constant.numberOfGridCol - 2, -1],
+      ];
+
+      for (int i = 0; i < block.length; i++) {
+        block[i] += listRotate[rotate][i];
+      }
+      rotate = (rotate + 1) % 4;
+
+      for (int i = 0; i < block.length; i++) {
+        if (block[i] < 0 ||
+            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+          return;
+        }
+      }
+
+      var listCheck = [];
+      for (var item in block) {
+        var temp = item % (Constant.numberOfGridCol);
+        if (listCheck.contains(temp) == false) {
+          listCheck.add(temp);
+        }
+      }
+
+      for (int i = 1; i < listCheck.length; i++) {
+        if ((listCheck[i] - listCheck[i - 1]).abs() != 1) {
+          return;
         }
       }
     }

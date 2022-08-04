@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
@@ -75,7 +76,9 @@ class _ListControlButtonState extends State<ListControlButton> {
           ),
           ControlButton(
             child: Text(
-              provider.point.toString(),
+              Provider.of<MyTetrisProvider>(context, listen: true)
+                  .point
+                  .toString(),
               style: const TextStyle(color: Colors.white, fontSize: 17.0),
             ),
             callBack: () {},
@@ -144,10 +147,10 @@ class _ListControlButtonState extends State<ListControlButton> {
           var hitFloor = provider.updateBlock();
           controlTimer = timer;
           if (hitFloor) {
+            provider.clearRow();
             if (provider.createABlock() == false) {
               timer.cancel();
               controlTimer = null;
-              // endGame();
               showMyDialog();
               return;
             }
@@ -165,7 +168,8 @@ class _ListControlButtonState extends State<ListControlButton> {
     );
   }
 
-  void moveToLeft() {
+  void moveToLeft() async {
+    await playMusic();
     provider.updateBlock(direction: 'l');
   }
 
@@ -177,6 +181,9 @@ class _ListControlButtonState extends State<ListControlButton> {
     provider.rotateBlock();
   }
 
+  Future playMusic() async {
+    await SystemSound.play(SystemSoundType.click);
+  }
   // @override
   // void dispose() {
   //   super.dispose();
