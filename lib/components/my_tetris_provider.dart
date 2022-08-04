@@ -56,7 +56,7 @@ class MyTetrisProvider extends ChangeNotifier {
 
     for (int i in block) {
       if (i >= 0 && listOfSquare[i].color != Colors.black) {
-        resetGridTableToOriginal();
+        resetGridTable();
         return false;
       }
     }
@@ -162,22 +162,65 @@ class MyTetrisProvider extends ChangeNotifier {
     return newBlock;
   }
 
+  void moveBlockToButtonRightNow() {
+    var newBlock = List<int>.from(currentBlock['block']);
+    resetGridTable();
+
+    //Tiếp tục đi xuống đến khi nào chạm đích
+    while (true) {
+      // bool overlap = false;
+      // bool hitfloor = false;
+      bool check = false;
+      //Cho khối đi xuống
+      for (int i = 0; i < newBlock.length; i++) {
+        newBlock[i] += Constant.numberOfGridCol;
+      }
+
+      //Kiểm tra vị trí mới của khối có hợp lệ hay không? đè lên khối khác hay chạm đích rồi
+      for (int i = 0; i < newBlock.length; i++) {
+        if (newBlock[i] >=
+            Constant.numberOfGridCol * Constant.numberOfGridRow) {
+          check = true;
+          break;
+        } else {
+          if (listOfSquare[newBlock[i]].color != Colors.black) {
+            check = true;
+            break;
+          }
+        }
+      }
+
+      //Khối không hợp lệ: quay lại một hàng
+      if (check == true) {
+        for (int i = 0; i < newBlock.length; i++) {
+          newBlock[i] -= Constant.numberOfGridCol;
+        }
+        break;
+      }
+    }
+
+    listOfLandedBlock.add({
+        'block': newBlock,
+        'color': currentBlock['color'],
+      });
+    resetGridTable();
+    notifyListeners();
+    clearRow();
+  }
+
   void clearRow() {
     //Duyệt qua từng hàng: từ dưới lên (cao đến thấp)
     for (int i = Constant.numberOfGridRow - 1; i >= 0; i--) {
-      debugPrint("loop i");
 
       //Kiểm tra có đủ số cột hay không (numberOfGridCol)
       int check = 0;
       for (int j = 0; j < Constant.numberOfGridCol; j++) {
-        debugPrint("loop j");
         int index = i * Constant.numberOfGridCol + j;
         if (listOfSquare[index].color != Colors.black) {
           check++;
         }
       }
 
-      debugPrint("Xoa hang");
       //xóa hàng khi đủ 1 hàng
       if (check == Constant.numberOfGridCol) {
         //Cập nhật lại điểm số
@@ -225,7 +268,6 @@ class MyTetrisProvider extends ChangeNotifier {
 
     resetGridTable();
     notifyListeners();
-    debugPrint("check clear row");
   }
 
   void rotateBlock() {

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
 
+import '../components/control_button.dart';
+
 class ListControlButton extends StatefulWidget {
   const ListControlButton({
     required this.pageContext,
@@ -18,13 +20,16 @@ class ListControlButton extends StatefulWidget {
 
 class _ListControlButtonState extends State<ListControlButton> {
   late final MyTetrisProvider provider;
+  // late final MyTetrisProvider providerCanListen;
   late BuildContext myContext;
+  var iconPlayOrStop = Icons.play_circle;
   Timer? controlTimer;
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<MyTetrisProvider>(context, listen: false);
+    // providerCanListen = Provider.of<MyTetrisProvider>(context, listen: true);
     myContext = context;
   }
 
@@ -33,57 +38,145 @@ class _ListControlButtonState extends State<ListControlButton> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: SizedBox(
-        height: 50,
+        height: 120,
         width: double.infinity,
-        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          ControlButton(
-            child: const Text(
-              "PLAY",
-              style: TextStyle(color: Colors.white, fontSize: 17.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ControlButton(
+                callBack: null,
+                child: Column(
+                  children: [
+                    ControlButton(
+                      callBack: null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset('assets/images/award.png',
+                                height: 20.0),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+                            Text(
+                              Provider.of<MyTetrisProvider>(context,
+                                      listen: true)
+                                  .point
+                                  .toString(),
+                              style: const TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    ControlButton(
+                      child: const Icon(
+                        Icons.rotate_right,
+                        color: Colors.white,
+                        size: 40.0,
+                      ),
+                      callBack: () => startGame(),
+                    ),
+                  ],
+                )),
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(),
+                        ),
+                        ControlButton(
+                          child: const Icon(
+                            Icons.arrow_left,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                          callBack: () => moveToLeft(),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        ControlButton(
+                          child: const Icon(
+                            Icons.arrow_drop_up,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                          callBack: () => rotate(),
+                        ),
+                        ControlButton(
+                          child: Icon(
+                            iconPlayOrStop,
+                            size: 30.0,
+                            color: Colors.white,
+                          ),
+                          callBack: () {
+                            setState(() {
+                              if (iconPlayOrStop == Icons.pause) {
+                                iconPlayOrStop = Icons.play_circle;
+                              } else {
+                                iconPlayOrStop = Icons.pause;
+                              }
+                            });
+                            // rotate();
+                            stopGame();
+                          },
+                        ),
+                        ControlButton(
+                          child: const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                          callBack: () => moveToBottomRightNow(),
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(),
+                        ),
+                        ControlButton(
+                          child: const Icon(
+                            Icons.arrow_right,
+                            color: Colors.white,
+                            size: 40.0,
+                          ),
+                          callBack: () => moveToRight(),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            callBack: () => startGame(),
-          ),
-          ControlButton(
-            child: const Text(
-              "STOP",
-              style: TextStyle(color: Colors.white, fontSize: 17.0),
+            ControlButton(
+              child: const Icon(
+                Icons.rotate_right,
+                color: Colors.white,
+                size: 40.0,
+              ),
+              callBack: () => startGame(),
             ),
-            callBack: () => stopGame(),
-          ),
-          ControlButton(
-            child: const Icon(
-              Icons.arrow_left,
-              color: Colors.white,
-              size: 40.0,
-            ),
-            callBack: () => moveToLeft(),
-          ),
-          ControlButton(
-            child: const Icon(
-              Icons.arrow_right,
-              color: Colors.white,
-              size: 40.0,
-            ),
-            callBack: () => moveToRight(),
-          ),
-          ControlButton(
-            child: const Icon(
-              Icons.rotate_right,
-              color: Colors.white,
-              size: 35.0,
-            ),
-            callBack: () => rotate(),
-          ),
-          ControlButton(
-            child: Text(
-              Provider.of<MyTetrisProvider>(context, listen: true)
-                  .point
-                  .toString(),
-              style: const TextStyle(color: Colors.white, fontSize: 17.0),
-            ),
-            callBack: () {},
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
@@ -92,6 +185,9 @@ class _ListControlButtonState extends State<ListControlButton> {
     if (controlTimer != null) {
       controlTimer!.cancel();
     }
+    setState(() {
+      iconPlayOrStop = Icons.pause;
+    });
     provider.clear();
     provider.resetGridTableToOriginal();
     provider.createABlock();
@@ -177,44 +273,25 @@ class _ListControlButtonState extends State<ListControlButton> {
     provider.updateBlock(direction: 'r');
   }
 
+  void moveToBottomRightNow() {
+    provider.moveBlockToButtonRightNow();
+    if (provider.createABlock() == false) {
+      controlTimer!.cancel();
+      controlTimer = null;
+      showMyDialog();
+      return;
+    }
+    // setState(() {
+    //   iconPlayOrStop = Icons.pause;
+    // });
+    // recursiveGame();
+  }
+
   void rotate() {
     provider.rotateBlock();
   }
 
   Future playMusic() async {
     await SystemSound.play(SystemSoundType.click);
-  }
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-}
-
-class ControlButton extends StatelessWidget {
-  const ControlButton({
-    Key? key,
-    required this.child,
-    required this.callBack,
-  }) : super(key: key);
-  final Widget child;
-  final Function() callBack;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: callBack,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Center(
-            child: child,
-          ),
-        ),
-      ),
-    );
   }
 }

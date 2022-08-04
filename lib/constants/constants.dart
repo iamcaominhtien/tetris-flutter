@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/grid_table.dart';
 
 class Constant {
-  static const int numberOfGridRow = 20; //15
-  static const int numberOfGridCol = 15; //10
+  static const int numberOfGridRow = 18; //15
+  static const int numberOfGridCol = 14; //10
 
   static const List<List<int>> pieces = [
     // [4, 5,Constant.numberOfGridCol+5, Constant.numberOfGridCol+6],
