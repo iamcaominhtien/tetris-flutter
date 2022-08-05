@@ -1,17 +1,48 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:tetris/components/my_pixel.dart';
 import '../constants/constants.dart';
-import '../widgets/grid_table.dart';
+// import '../widgets/grid_table.dart';
 
 class MyTetrisProvider extends ChangeNotifier {
   List<MyPixel> listOfSquare = List<MyPixel>.from(Constant.originalGridTable);
   List<Map<String, dynamic>> listOfLandedBlock = [];
   Map<String, dynamic> currentBlock = {};
+  Map<String, dynamic> nextBlock = {};
   int point = 0;
+  final StopWatchTimer stopWatchTimer = StopWatchTimer(
+    mode: StopWatchMode.countUp,
+  );
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await stopWatchTimer.dispose();
+  }
+
+  void updateTime({String status = 'c'}) {
+    //r: reset - p: pause - s: end - c: continue - s: start
+    if (status == 'c') {
+      stopWatchTimer.onExecute.add(StopWatchExecute.start);
+    } else if (status == 'e') {
+      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+      stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+    } else if (status == 'p') {
+      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+    } else if (status == 'r') {
+      stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+    } else if (status == 's') {
+      stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+      stopWatchTimer.onExecute.add(StopWatchExecute.start);
+    }
+    // notifyListeners();
+  }
 
   void clear() {
     listOfLandedBlock.clear();
     currentBlock.clear();
+    nextBlock.clear();
   }
 
   void resetGridTableToOriginal() {
@@ -28,35 +59,53 @@ class MyTetrisProvider extends ChangeNotifier {
 
       for (int i in block) {
         if (i >= 0) {
-          listOfSquare[i] = MyPixel(index: i, color: color);
+          listOfSquare[i] = MyPixel(
+            index: i,
+            color: color,
+          );
         } else {
           //End game
-          resetGridTableToOriginal();
-          clear();
-          return;
+          // resetGridTableToOriginal();
+          // clear();
+          // debugPrint("Herrehhhhhh");
+          // return;
         }
       }
     }
     // notifyListeners();
   }
 
-  bool createABlock() {
-    if (currentBlock.isNotEmpty) {
-      currentBlock.clear();
-    }
+  void createANextBlock() {
+    nextBlock.clear();
     int indexPiece = Random().nextInt(Constant.pieces.length);
     var block = Constant.pieces[indexPiece];
     var color =
         Constant.pieceColor[Random().nextInt(Constant.pieceColor.length)];
-    currentBlock['block'] = block;
-    currentBlock['color'] = color;
-    currentBlock['type'] = indexPiece;
-    currentBlock['rotate'] = 0;
+    nextBlock['block'] = block;
+    nextBlock['color'] = color;
+    nextBlock['type'] = indexPiece;
+    nextBlock['rotate'] = 0;
+    // debugPrint("createANextBlock");
+  }
+
+  bool createABlock() {
+    // if (currentBlock.isNotEmpty) {
+    //   currentBlock.clear();
+    // }
+    currentBlock.clear();
+    if (nextBlock.isEmpty) {
+      createANextBlock();
+    }
+    currentBlock = Map.from(nextBlock);
+    createANextBlock();
+    var block = currentBlock['block'];
+    var color = currentBlock['color'];
     resetGridTable();
 
     for (int i in block) {
       if (i >= 0 && listOfSquare[i].color != Colors.black) {
-        resetGridTable();
+        // resetGridTable();
+        resetGridTableToOriginal();
         return false;
       }
     }
@@ -66,6 +115,7 @@ class MyTetrisProvider extends ChangeNotifier {
         listOfSquare[i] = MyPixel(
           index: i,
           color: color,
+          isBorderLight: true,
         );
       }
     }
@@ -88,21 +138,28 @@ class MyTetrisProvider extends ChangeNotifier {
 
     for (int i = 0; i < newBlock.length; i++) {
       if (newBlock[i] >= 0) {
-        listOfSquare[newBlock[i]] =
-            MyPixel(index: newBlock[i], color: currentBlock['color']);
+        listOfSquare[newBlock[i]] = MyPixel(
+          index: newBlock[i],
+          color: currentBlock['color'],
+          isBorderLight: true,
+        );
       }
     }
 
+    //hitfloor
     var re = currentBlock['block'][0] == newBlock[0] && direction == 'b';
     currentBlock['block'] = List<int>.from(newBlock);
-    notifyListeners();
 
+    notifyListeners();
     if (re == true) {
       listOfLandedBlock.add({
         'block': newBlock,
         'color': currentBlock['color'],
       });
     }
+
+    //Kiểm tra khối ở vị trí mới có nửa âm nửa dương không?
+
     return re;
   }
 
@@ -127,20 +184,26 @@ class MyTetrisProvider extends ChangeNotifier {
   }
 
   List<int> moveBlockToLeft() {
-    var newBlock = List<int>.from(currentBlock['block']);
-    for (int i = 0; i < newBlock.length; i++) {
-      if (newBlock[i] % Constant.numberOfGridCol == 0) {
-        return newBlock;
-      } else {
-        if (newBlock[i] - 1 >= 0 &&
-            listOfSquare[newBlock[i] - 1].color != Colors.black) {
+    List<int> newBlock = [];
+    try {
+      newBlock = List<int>.from(currentBlock['block']);
+      for (int i = 0; i < newBlock.length; i++) {
+        if (newBlock[i] % Constant.numberOfGridCol == 0) {
           return newBlock;
+        } else {
+          if (newBlock[i] - 1 >= 0 &&
+              listOfSquare[newBlock[i] - 1].color != Colors.black) {
+            return newBlock;
+          }
         }
       }
+      for (int i = 0; i < newBlock.length; i++) {
+        newBlock[i] -= 1;
+      }
+    } catch (e) {
+      debugPrint("Error at move to the left button: $e");
     }
-    for (int i = 0; i < newBlock.length; i++) {
-      newBlock[i] -= 1;
-    }
+
     return newBlock;
   }
 
@@ -159,13 +222,13 @@ class MyTetrisProvider extends ChangeNotifier {
     for (int i = 0; i < newBlock.length; i++) {
       newBlock[i] += 1;
     }
+
     return newBlock;
   }
 
-  void moveBlockToButtonRightNow() {
+  bool moveBlockToButtonRightNow() {
     var newBlock = List<int>.from(currentBlock['block']);
     resetGridTable();
-
     //Tiếp tục đi xuống đến khi nào chạm đích
     while (true) {
       // bool overlap = false;
@@ -183,7 +246,8 @@ class MyTetrisProvider extends ChangeNotifier {
           check = true;
           break;
         } else {
-          if (listOfSquare[newBlock[i]].color != Colors.black) {
+          if (newBlock[i] >= 0 &&
+              listOfSquare[newBlock[i]].color != Colors.black) {
             check = true;
             break;
           }
@@ -200,18 +264,24 @@ class MyTetrisProvider extends ChangeNotifier {
     }
 
     listOfLandedBlock.add({
-        'block': newBlock,
-        'color': currentBlock['color'],
-      });
+      'block': newBlock,
+      'color': currentBlock['color'],
+    });
     resetGridTable();
     notifyListeners();
     clearRow();
+
+    //Kiểm tra xem khối mới có nửa âm nửa dương hay không?
+    for (var i in newBlock) {
+      if (i < 0) return false;
+    }
+
+    return true;
   }
 
   void clearRow() {
     //Duyệt qua từng hàng: từ dưới lên (cao đến thấp)
     for (int i = Constant.numberOfGridRow - 1; i >= 0; i--) {
-
       //Kiểm tra có đủ số cột hay không (numberOfGridCol)
       int check = 0;
       for (int j = 0; j < Constant.numberOfGridCol; j++) {
@@ -488,8 +558,11 @@ class MyTetrisProvider extends ChangeNotifier {
     resetGridTable();
     for (int i = 0; i < block.length; i++) {
       if (block[i] >= 0) {
-        listOfSquare[block[i]] =
-            MyPixel(index: block[i], color: currentBlock['color']);
+        listOfSquare[block[i]] = MyPixel(
+          index: block[i],
+          color: currentBlock['color'],
+          isBorderLight: true,
+        );
       }
     }
     notifyListeners();

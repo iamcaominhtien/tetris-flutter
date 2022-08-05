@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
-
-import '../components/control_button.dart';
+import 'package:tetris/widgets/list_control_btn/show_next_block.dart';
+import 'control_button.dart';
 
 class ListControlButton extends StatefulWidget {
   const ListControlButton({
@@ -20,16 +20,16 @@ class ListControlButton extends StatefulWidget {
 
 class _ListControlButtonState extends State<ListControlButton> {
   late final MyTetrisProvider provider;
-  // late final MyTetrisProvider providerCanListen;
   late BuildContext myContext;
   var iconPlayOrStop = Icons.play_circle;
   Timer? controlTimer;
+  List<Map<String, dynamic>> listBtn = [];
+  bool isActive = false; //turn off all ControlButton (except play button)
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<MyTetrisProvider>(context, listen: false);
-    // providerCanListen = Provider.of<MyTetrisProvider>(context, listen: true);
     myContext = context;
   }
 
@@ -38,89 +38,101 @@ class _ListControlButtonState extends State<ListControlButton> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: SizedBox(
-        height: 120,
+        height: 90,
         width: double.infinity,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ControlButton(
-                callBack: null,
-                child: Column(
-                  children: [
-                    ControlButton(
-                      callBack: null,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.asset('assets/images/award.png',
-                                height: 20.0),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-                            Text(
-                              Provider.of<MyTetrisProvider>(context,
-                                      listen: true)
-                                  .point
-                                  .toString(),
-                              style: const TextStyle(color: Colors.white),
-                            )
-                          ],
-                        ),
-                      ),
+            Expanded(
+              child: Column(
+                children: [
+                  ControlButton(
+                    callBack: () => moveToLeft(),
+                    errorAt: "MoveLeftButton",
+                    isActive: isActive,
+                    child: const Icon(
+                      Icons.arrow_left,
+                      color: Colors.white,
+                      size: 30.0,
                     ),
-                    ControlButton(
-                      child: const Icon(
-                        Icons.rotate_right,
-                        color: Colors.white,
-                        size: 40.0,
-                      ),
-                      callBack: () => startGame(),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  ControlButton(
+                    errorAt: "RightToBottomRightNow",
+                    isActive: isActive,
+                    callBack: () => moveToBottomRightNow(),
+                    child: const Icon(
+                      Icons.arrow_downward_rounded,
+                      color: Colors.white,
+                      size: 25.0,
                     ),
-                  ],
-                )),
+                  ),
+                ],
+              ),
+            ),
+            const Expanded(
+              flex: 2,
+              child: ShowNextBlock(),
+            ),
             Expanded(
               flex: 2,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
                     child: Column(
                       children: [
-                        Expanded(
-                          child: Container(),
+                        ControlButton(
+                          callBack: () => moveToRight(),
+                          errorAt: "MoveRightButton",
+                          isActive: isActive,
+                          child: const Icon(
+                            Icons.arrow_right,
+                            color: Colors.white,
+                            size: 30.0,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
                         ),
                         ControlButton(
+                          errorAt: "RotateButton",
+                          isActive: isActive,
+                          callBack: () => rotate(),
                           child: const Icon(
-                            Icons.arrow_left,
+                            Icons.rotate_right,
                             color: Colors.white,
-                            size: 40.0,
+                            size: 30.0,
                           ),
-                          callBack: () => moveToLeft(),
-                        ),
-                        Expanded(
-                          child: Container(),
                         ),
                       ],
                     ),
                   ),
                   Expanded(
+                    //right - play(P) - rotate - playOrStop button
                     child: Column(
                       children: [
                         ControlButton(
-                          child: const Icon(
-                            Icons.arrow_drop_up,
-                            color: Colors.white,
-                            size: 40.0,
+                          errorAt: "P or PlayButton",
+                          btnColor: Colors.blue[800],
+                          callBack: () => startGame(),
+                          child: const Text(
+                            'P',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 25.0,
+                            ),
                           ),
-                          callBack: () => rotate(),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
                         ),
                         ControlButton(
-                          child: Icon(
-                            iconPlayOrStop,
-                            size: 30.0,
-                            color: Colors.white,
-                          ),
+                          errorAt: "PlayOrStopButton",
+                          isActive: isActive,
                           callBack: () {
                             setState(() {
                               if (iconPlayOrStop == Icons.pause) {
@@ -132,48 +144,17 @@ class _ListControlButtonState extends State<ListControlButton> {
                             // rotate();
                             stopGame();
                           },
-                        ),
-                        ControlButton(
-                          child: const Icon(
-                            Icons.arrow_drop_down,
+                          child: Icon(
+                            iconPlayOrStop,
+                            size: 25.0,
                             color: Colors.white,
-                            size: 40.0,
                           ),
-                          callBack: () => moveToBottomRightNow(),
-                        )
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(),
-                        ),
-                        ControlButton(
-                          child: const Icon(
-                            Icons.arrow_right,
-                            color: Colors.white,
-                            size: 40.0,
-                          ),
-                          callBack: () => moveToRight(),
-                        ),
-                        Expanded(
-                          child: Container(),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-            ControlButton(
-              child: const Icon(
-                Icons.rotate_right,
-                color: Colors.white,
-                size: 40.0,
-              ),
-              callBack: () => startGame(),
             ),
           ],
         ),
@@ -188,9 +169,14 @@ class _ListControlButtonState extends State<ListControlButton> {
     setState(() {
       iconPlayOrStop = Icons.pause;
     });
+    provider.updateTime(status: 's');
     provider.clear();
     provider.resetGridTableToOriginal();
     provider.createABlock();
+
+    setState(() {
+      isActive = true;
+    });
     recursiveGame();
     // showMyDialog();
   }
@@ -199,8 +185,10 @@ class _ListControlButtonState extends State<ListControlButton> {
     if (controlTimer != null) {
       controlTimer!.cancel();
       controlTimer = null;
+      provider.updateTime(status: 'p');
     } else {
       if (provider.currentBlock.isNotEmpty) {
+        provider.updateTime(status: 'c');
         recursiveGame();
       }
     }
@@ -231,6 +219,13 @@ class _ListControlButtonState extends State<ListControlButton> {
         }).then((chose) {
       if (chose == 'OK') {
         startGame();
+      } else {
+        provider.clear();
+        provider.resetGridTableToOriginal();
+        setState(() {
+          isActive = false;
+          iconPlayOrStop = Icons.play_circle;
+        });
       }
     });
   }
@@ -245,6 +240,7 @@ class _ListControlButtonState extends State<ListControlButton> {
           if (hitFloor) {
             provider.clearRow();
             if (provider.createABlock() == false) {
+              provider.updateTime(status: 'e');
               timer.cancel();
               controlTimer = null;
               showMyDialog();
@@ -257,6 +253,7 @@ class _ListControlButtonState extends State<ListControlButton> {
         } catch (e) {
           timer.cancel();
           controlTimer = null;
+          provider.updateTime(status: 'e');
           return;
           // startGame();
         }
@@ -274,8 +271,9 @@ class _ListControlButtonState extends State<ListControlButton> {
   }
 
   void moveToBottomRightNow() {
-    provider.moveBlockToButtonRightNow();
-    if (provider.createABlock() == false) {
+    var isContinue = provider.moveBlockToButtonRightNow();
+    if (provider.createABlock() == false || isContinue == false) {
+      provider.updateTime(status: 'e');
       controlTimer!.cancel();
       controlTimer = null;
       showMyDialog();
