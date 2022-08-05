@@ -18,40 +18,31 @@ class _GridTableState extends State<GridTable> {
     return Consumer<MyTetrisProvider>(
       builder: (context, provider, child) {
         return Expanded(
-          child: GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: Constant.numberOfGridCol,
-            children: provider.listOfSquare,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 13.0),
+              decoration: BoxDecoration(
+                color: Constant.primaryColor,
+                // color: Colors.grey,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(137, 29, 27, 27),
+                  border: Border.all(color: Colors.white, width: 1.0),
+                ),
+                child: GridView.count(
+                  physics:  const NeverScrollableScrollPhysics(),
+                  crossAxisCount: Constant.numberOfGridCol,
+                  children: provider.listOfSquare,
+                ),
+              ),
+            ),
           ),
         );
       },
-    );
-  }
-}
-
-class MyPixel extends StatelessWidget {
-  const MyPixel({
-    Key? key,
-    required this.index,
-    this.color = Colors.black,
-  }) : super(key: key);
-  final int index;
-  final dynamic color;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-        margin: EdgeInsets.only(
-            top: 2,
-            left: index % Constant.numberOfGridCol == 0 ? 0 : 2,
-            right: (index + 1) % Constant.numberOfGridCol == 0 ? 0 : 2,
-            bottom: 2),
-      ),
     );
   }
 }
