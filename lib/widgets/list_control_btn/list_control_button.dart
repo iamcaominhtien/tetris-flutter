@@ -36,7 +36,7 @@ class _ListControlButtonState extends State<ListControlButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.only(bottom: 7.5),
       child: SizedBox(
         height: 90,
         width: double.infinity,
@@ -50,10 +50,11 @@ class _ListControlButtonState extends State<ListControlButton> {
                     callBack: () => moveToLeft(),
                     errorAt: "MoveLeftButton",
                     isActive: isActive,
+                    btnColor: Colors.yellow,
                     child: const Icon(
                       Icons.arrow_left,
-                      color: Colors.white,
-                      size: 30.0,
+                      color: Colors.black,
+                      size: 35.0,
                     ),
                   ),
                   const SizedBox(
@@ -62,6 +63,7 @@ class _ListControlButtonState extends State<ListControlButton> {
                   ControlButton(
                     errorAt: "RightToBottomRightNow",
                     isActive: isActive,
+                    btnColor: const Color.fromARGB(255, 248, 20, 4),
                     callBack: () => moveToBottomRightNow(),
                     child: const Icon(
                       Icons.arrow_downward_rounded,
@@ -87,11 +89,12 @@ class _ListControlButtonState extends State<ListControlButton> {
                         ControlButton(
                           callBack: () => moveToRight(),
                           errorAt: "MoveRightButton",
+                          btnColor: const Color.fromARGB(255, 3, 182, 9),
                           isActive: isActive,
                           child: const Icon(
                             Icons.arrow_right,
                             color: Colors.white,
-                            size: 30.0,
+                            size: 35.0,
                           ),
                         ),
                         const SizedBox(
@@ -100,6 +103,7 @@ class _ListControlButtonState extends State<ListControlButton> {
                         ControlButton(
                           errorAt: "RotateButton",
                           isActive: isActive,
+                          btnColor: const Color.fromARGB(255, 117, 50, 25),
                           callBack: () => rotate(),
                           child: const Icon(
                             Icons.rotate_right,

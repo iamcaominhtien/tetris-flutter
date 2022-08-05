@@ -14,7 +14,7 @@ class ShowNextBlock extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
         decoration: BoxDecoration(
           color: Constant.primaryColor,
           borderRadius: BorderRadius.circular(6.0),
@@ -24,8 +24,7 @@ class ShowNextBlock extends StatelessWidget {
             List<int> block = [];
             var color = Constant.primaryColor;
             if (nextBlock.nextBlock.isNotEmpty) {
-              block =
-                  Constant.showNextBlock[nextBlock.nextBlock['type']];
+              block = Constant.showNextBlock[nextBlock.nextBlock['type']];
               color = nextBlock.nextBlock['color'];
             }
 
@@ -37,9 +36,8 @@ class ShowNextBlock extends StatelessWidget {
                 (index) => MyPixel(
                   index: index,
                   isRadius: false,
-                  color: block.contains(index)
-                      ? color
-                      : Constant.primaryColor,
+                  color:
+                      block.contains(index) ? color : Constant.primaryColor,
                 ),
               ),
             );

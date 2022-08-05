@@ -51,24 +51,14 @@ class Constant {
   ];
 
   static const List<List<int>> showNextBlock = [
-    [
-      1,2,6,7
-    ], //4, 5, 15, 16
-    [
-      1,2,5,6
-    ], //4 5 14 15
-    [
-      1,5,9,10
-    ], //4 14 24 25
-    [
-      1,5,9
-    ], //4, 14, 24, 34
-    [
-      2,6,9,10
-    ], //5, 15, 24, 25
-    [1,5,6,10], //4, 14, 15, 25
-    [2,6,5,9],// [5, 15, 14, 24], 
-    [0,1,2,5],// [4, 5, 6, 15],
+    [1, 2, 6, 7], //4, 5, 15, 16
+    [1, 2, 5, 6], //4 5 14 15
+    [1, 5, 9, 10], //4 14 24 25
+    [1, 5, 9], //4, 14, 24, 34
+    [2, 6, 9, 10], //5, 15, 24, 25
+    [1, 5, 6, 10], //4, 14, 15, 25
+    [2, 6, 5, 9], // [5, 15, 14, 24],
+    [0, 1, 2, 5], // [4, 5, 6, 15],
   ];
 
   static const List pieceColor = [
@@ -92,4 +82,10 @@ class Constant {
   static const duration = Duration(milliseconds: 300);
 
   static const primaryColor = Colors.black;
+
+  static const TextStyle tetrisBoardTextStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.0);
 }

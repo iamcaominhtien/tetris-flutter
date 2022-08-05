@@ -4,7 +4,7 @@ import '../widgets/grid_table.dart';
 import '../widgets/list_control_btn/list_control_button.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/tetris_board.dart';
+import '../widgets/tetris_board/tetris_board.dart';
 
 class TetrisPage extends StatefulWidget {
   const TetrisPage({Key? key}) : super(key: key);
