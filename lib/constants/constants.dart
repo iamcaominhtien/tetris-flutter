@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/my_pixel.dart';
 
 class Constant {
-  static const int numberOfGridRow = 21; //15
+  static const int numberOfGridRow = 20; //15 20
   static const int numberOfGridCol = 15; //10
 
   static const List<List<int>> pieces = [
@@ -82,6 +82,16 @@ class Constant {
   static const duration = Duration(milliseconds: 300);
 
   static const primaryColor = Colors.black;
+
+  // ignore: constant_identifier_names
+  static const SOUNDS = [
+  'clean.mp3',
+  'drop.mp3',
+  'explosion.mp3',
+  'move.mp3',
+  'rotate.mp3',
+  'start.mp3'
+];
 
   static const TextStyle tetrisBoardTextStyle = TextStyle(
       color: Colors.white,

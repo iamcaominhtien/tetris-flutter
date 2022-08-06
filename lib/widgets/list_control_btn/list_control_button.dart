@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
 import 'package:tetris/widgets/list_control_btn/show_next_block.dart';
+import 'package:tetris/widgets/play_sound.dart';
 import 'control_button.dart';
 
 class ListControlButton extends StatefulWidget {
@@ -25,18 +26,20 @@ class _ListControlButtonState extends State<ListControlButton> {
   Timer? controlTimer;
   List<Map<String, dynamic>> listBtn = [];
   bool isActive = false; //turn off all ControlButton (except play button)
+  late final PlaySound _sound;
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<MyTetrisProvider>(context, listen: false);
     myContext = context;
+    _sound = provider.sound;
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 7.5),
+      padding: const EdgeInsets.only(bottom: 13.5),
       child: SizedBox(
         height: 90,
         width: double.infinity,
@@ -167,6 +170,7 @@ class _ListControlButtonState extends State<ListControlButton> {
   }
 
   void startGame() {
+    _sound.start();
     if (controlTimer != null) {
       controlTimer!.cancel();
     }
@@ -265,16 +269,19 @@ class _ListControlButtonState extends State<ListControlButton> {
     );
   }
 
-  void moveToLeft() async {
-    await playMusic();
+  void moveToLeft() {
+    // await playMusic();
+    _sound.move();
     provider.updateBlock(direction: 'l');
   }
 
   void moveToRight() {
+    _sound.move();
     provider.updateBlock(direction: 'r');
   }
 
   void moveToBottomRightNow() {
+    _sound.fall();
     var isContinue = provider.moveBlockToButtonRightNow();
     if (provider.createABlock() == false || isContinue == false) {
       provider.updateTime(status: 'e');
@@ -290,6 +297,7 @@ class _ListControlButtonState extends State<ListControlButton> {
   }
 
   void rotate() {
+    _sound.rotate();
     provider.rotateBlock();
   }
 

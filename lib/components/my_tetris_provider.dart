@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:tetris/components/my_pixel.dart';
 import '../constants/constants.dart';
+import '../widgets/play_sound.dart';
 // import '../widgets/grid_table.dart';
 
 class MyTetrisProvider extends ChangeNotifier {
@@ -14,11 +15,13 @@ class MyTetrisProvider extends ChangeNotifier {
   final StopWatchTimer stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countUp,
   );
+  final PlaySound sound = PlaySound();
 
   @override
   void dispose() async {
     super.dispose();
     await stopWatchTimer.dispose();
+    sound.dispose();
   }
 
   void updateTime({String status = 'c'}) {
@@ -329,6 +332,7 @@ class MyTetrisProvider extends ChangeNotifier {
           listOfLandedBlock.removeAt(listRemoveBlock[l]);
         }
 
+        sound.clear();
         resetGridTable();
         i++;
       } else if (check == 0) {

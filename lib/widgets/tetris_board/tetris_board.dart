@@ -35,7 +35,7 @@ class _TetrisBoardState extends State<TetrisBoard> {
           final displayTime =
               StopWatchTimer.getDisplayTime(value, milliSecond: false);
           return Padding(
-            padding: const EdgeInsets.only(top: 7.5),
+            padding: const EdgeInsets.only(top: 13.5),
             child: SizedBox(
               height: 60.0,
               width: double.infinity,

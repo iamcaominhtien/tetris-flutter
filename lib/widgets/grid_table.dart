@@ -19,7 +19,7 @@ class _GridTableState extends State<GridTable> {
       builder: (context, provider, child) {
         return Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 13.0),
             child: Container(
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 13.0),
@@ -30,7 +30,8 @@ class _GridTableState extends State<GridTable> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(137, 29, 27, 27),
+                  // color: const Color.fromARGB(137, 29, 27, 27),
+                  color: const Color.fromARGB(135, 68, 62, 62),
                   border: Border.all(color: Colors.white, width: 1.0),
                 ),
                 child: GridView.count(

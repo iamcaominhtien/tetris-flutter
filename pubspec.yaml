@@ -38,6 +38,7 @@ dependencies:
   assets_audio_player: ^3.0.5
   stop_watch_timer: ^1.5.0
   auto_size_text: ^3.0.0
+  soundpool: ^2.3.0
 
 dev_dependencies:
   flutter_test:
