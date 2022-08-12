@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:tetris/constants/constants.dart';
 import 'pages/tetris_page.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
+  if (defaultTargetPlatform == TargetPlatform.windows || kIsWeb) {
+    Constant.numberOfGridRow = 19;
+    Constant.numberOfGridCol = 28;
+  }
   runApp(const MyApp());
 }
 
