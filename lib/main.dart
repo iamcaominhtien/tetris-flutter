@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 
 void main() {
   if (defaultTargetPlatform == TargetPlatform.windows || kIsWeb) {
-    Constant.numberOfGridRow = 19;
-    Constant.numberOfGridCol = 28;
+    Constant.numberOfGridRowOfGridTable = 19;
+    Constant.numberOfGridColOfGridTable = 28;
   }
   runApp(const MyApp());
 }

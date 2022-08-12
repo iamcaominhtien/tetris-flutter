@@ -30,14 +30,14 @@ class ShowNextBlock extends StatelessWidget {
 
             return GridView.count(
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 4,
+              crossAxisCount: Constant.numberOfGridColOfShowNextBlock,
               children: List.generate(
-                12,
+                Constant.numberOfGridColOfShowNextBlock *
+                    Constant.numberOfGridRowOfShowNextBlock,
                 (index) => MyPixel(
                   index: index,
                   isRadius: false,
-                  color:
-                      block.contains(index) ? color : Constant.primaryColor,
+                  color: block.contains(index) ? color : Constant.primaryColor,
                 ),
               ),
             );

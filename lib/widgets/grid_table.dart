@@ -20,11 +20,11 @@ class _GridTableState extends State<GridTable> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        heightOfGrid =
-            (((constraints.maxWidth - 30) / Constant.numberOfGridCol) *
-                        Constant.numberOfGridRow +
-                    26 * 2)
-                .ceilToDouble();
+        heightOfGrid = (((constraints.maxWidth - 30) /
+                        Constant.numberOfGridColOfGridTable) *
+                    Constant.numberOfGridRowOfGridTable +
+                26 * 2)
+            .ceilToDouble();
         return Center(
           child: SizedBox(
             width: double.infinity,
@@ -48,7 +48,7 @@ class _GridTableState extends State<GridTable> {
                   child: Consumer<MyTetrisProvider>(
                     builder: (context, provider, child) => GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: Constant.numberOfGridCol,
+                      crossAxisCount: Constant.numberOfGridColOfGridTable,
                       children: provider.listOfSquare,
                     ),
                   ),

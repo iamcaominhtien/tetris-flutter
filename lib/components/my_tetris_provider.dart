@@ -169,19 +169,21 @@ class MyTetrisProvider extends ChangeNotifier {
   List<int> moveBlockToBottom() {
     var newBlock = List<int>.from(currentBlock['block']);
     for (int i = 0; i < newBlock.length; i++) {
-      if (newBlock[i] + Constant.numberOfGridCol >=
-          Constant.numberOfGridRow * Constant.numberOfGridCol) {
+      if (newBlock[i] + Constant.numberOfGridColOfGridTable >=
+          Constant.numberOfGridRowOfGridTable *
+              Constant.numberOfGridColOfGridTable) {
         return newBlock;
       } else {
-        if (newBlock[i] + Constant.numberOfGridCol >= 0 &&
-            listOfSquare[newBlock[i] + Constant.numberOfGridCol].color !=
+        if (newBlock[i] + Constant.numberOfGridColOfGridTable >= 0 &&
+            listOfSquare[newBlock[i] + Constant.numberOfGridColOfGridTable]
+                    .color !=
                 Colors.black) {
           return newBlock;
         }
       }
     }
     for (int i = 0; i < newBlock.length; i++) {
-      newBlock[i] += Constant.numberOfGridCol;
+      newBlock[i] += Constant.numberOfGridColOfGridTable;
     }
     return newBlock;
   }
@@ -191,7 +193,7 @@ class MyTetrisProvider extends ChangeNotifier {
     try {
       newBlock = List<int>.from(currentBlock['block']);
       for (int i = 0; i < newBlock.length; i++) {
-        if (newBlock[i] % Constant.numberOfGridCol == 0) {
+        if (newBlock[i] % Constant.numberOfGridColOfGridTable == 0) {
           return newBlock;
         } else {
           if (newBlock[i] - 1 >= 0 &&
@@ -213,7 +215,7 @@ class MyTetrisProvider extends ChangeNotifier {
   List<int> moveBlockToRight() {
     var newBlock = List<int>.from(currentBlock['block']);
     for (int i = 0; i < newBlock.length; i++) {
-      if ((newBlock[i] + 1) % Constant.numberOfGridCol == 0) {
+      if ((newBlock[i] + 1) % Constant.numberOfGridColOfGridTable == 0) {
         return newBlock;
       } else {
         if (newBlock[i] + 1 >= 0 &&
@@ -239,13 +241,14 @@ class MyTetrisProvider extends ChangeNotifier {
       bool check = false;
       //Cho khối đi xuống
       for (int i = 0; i < newBlock.length; i++) {
-        newBlock[i] += Constant.numberOfGridCol;
+        newBlock[i] += Constant.numberOfGridColOfGridTable;
       }
 
       //Kiểm tra vị trí mới của khối có hợp lệ hay không? đè lên khối khác hay chạm đích rồi
       for (int i = 0; i < newBlock.length; i++) {
         if (newBlock[i] >=
-            Constant.numberOfGridCol * Constant.numberOfGridRow) {
+            Constant.numberOfGridColOfGridTable *
+                Constant.numberOfGridRowOfGridTable) {
           check = true;
           break;
         } else {
@@ -260,7 +263,7 @@ class MyTetrisProvider extends ChangeNotifier {
       //Khối không hợp lệ: quay lại một hàng
       if (check == true) {
         for (int i = 0; i < newBlock.length; i++) {
-          newBlock[i] -= Constant.numberOfGridCol;
+          newBlock[i] -= Constant.numberOfGridColOfGridTable;
         }
         break;
       }
@@ -284,18 +287,18 @@ class MyTetrisProvider extends ChangeNotifier {
 
   void clearRow() {
     //Duyệt qua từng hàng: từ dưới lên (cao đến thấp)
-    for (int i = Constant.numberOfGridRow - 1; i >= 0; i--) {
+    for (int i = Constant.numberOfGridRowOfGridTable - 1; i >= 0; i--) {
       //Kiểm tra có đủ số cột hay không (numberOfGridCol)
       int check = 0;
-      for (int j = 0; j < Constant.numberOfGridCol; j++) {
-        int index = i * Constant.numberOfGridCol + j;
+      for (int j = 0; j < Constant.numberOfGridColOfGridTable; j++) {
+        int index = i * Constant.numberOfGridColOfGridTable + j;
         if (listOfSquare[index].color != Colors.black) {
           check++;
         }
       }
 
       //xóa hàng khi đủ 1 hàng
-      if (check == Constant.numberOfGridCol) {
+      if (check == Constant.numberOfGridColOfGridTable) {
         //Cập nhật lại điểm số
         point++;
         var listRemoveBlock = [];
@@ -306,15 +309,15 @@ class MyTetrisProvider extends ChangeNotifier {
 
           //Xóa các ô cùng hàng với hàng cần xóa
           for (int j = block.length - 1; j >= 0; j--) {
-            if ((block[j] ~/ Constant.numberOfGridCol) == i) {
+            if ((block[j] ~/ Constant.numberOfGridColOfGridTable) == i) {
               block.removeAt(j);
             }
           }
 
           //Đẩy các ô nằm trên hàng cần xóa xuống 1 hàng
           for (int j = 0; j < block.length; j++) {
-            if ((block[j] ~/ Constant.numberOfGridCol) < i) {
-              block[j] += Constant.numberOfGridCol;
+            if ((block[j] ~/ Constant.numberOfGridColOfGridTable) < i) {
+              block[j] += Constant.numberOfGridColOfGridTable;
             }
           }
 
@@ -354,10 +357,30 @@ class MyTetrisProvider extends ChangeNotifier {
       //        x x
 
       List<List<int>> listRotate = [
-        [2, Constant.numberOfGridCol, 1, Constant.numberOfGridCol - 1],
-        [Constant.numberOfGridCol - 2, 0, Constant.numberOfGridCol - 1, 1],
-        [-Constant.numberOfGridCol + 1, -1, -Constant.numberOfGridCol, -2],
-        [-1, -Constant.numberOfGridCol + 1, 0, -Constant.numberOfGridCol + 2],
+        [
+          2,
+          Constant.numberOfGridColOfGridTable,
+          1,
+          Constant.numberOfGridColOfGridTable - 1
+        ],
+        [
+          Constant.numberOfGridColOfGridTable - 2,
+          0,
+          Constant.numberOfGridColOfGridTable - 1,
+          1
+        ],
+        [
+          -Constant.numberOfGridColOfGridTable + 1,
+          -1,
+          -Constant.numberOfGridColOfGridTable,
+          -2
+        ],
+        [
+          -1,
+          -Constant.numberOfGridColOfGridTable + 1,
+          0,
+          -Constant.numberOfGridColOfGridTable + 2
+        ],
       ];
       for (int i = 0; i < block.length; i++) {
         block[i] += listRotate[rotate][i];
@@ -369,14 +392,16 @@ class MyTetrisProvider extends ChangeNotifier {
       if (rotate % 2 != 0) {
         for (int i = 0; i < block.length; i++) {
           if (block[i] < 0 ||
-              block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+              block[i] >=
+                  Constant.numberOfGridRowOfGridTable *
+                      Constant.numberOfGridColOfGridTable) {
             return;
           }
         }
 
         var listCheck = [];
         for (var item in block) {
-          var temp = item % Constant.numberOfGridCol;
+          var temp = item % Constant.numberOfGridColOfGridTable;
           if (listCheck.contains(temp) == false) {
             listCheck.add(temp);
           }
@@ -393,14 +418,16 @@ class MyTetrisProvider extends ChangeNotifier {
         //horizontal block
         for (int i = 0; i < block.length; i++) {
           if (block[i] < 0 ||
-              block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+              block[i] >=
+                  Constant.numberOfGridRowOfGridTable *
+                      Constant.numberOfGridColOfGridTable) {
             return;
           }
         }
 
         var listCheck = [];
         for (var item in block) {
-          var temp = item % Constant.numberOfGridCol;
+          var temp = item % Constant.numberOfGridColOfGridTable;
           if (listCheck.contains(temp) == false) {
             listCheck.add(temp);
           }
@@ -422,19 +449,29 @@ class MyTetrisProvider extends ChangeNotifier {
       //    x
       //    x x
       List<List<int>> listRotate = [
-        [Constant.numberOfGridCol - 1, 0, -Constant.numberOfGridCol + 1, -2],
-        [-Constant.numberOfGridCol, -Constant.numberOfGridCol, -1, 1],
         [
-          Constant.numberOfGridCol,
-          Constant.numberOfGridCol,
-          1,
-          -2 * Constant.numberOfGridCol + 1
+          Constant.numberOfGridColOfGridTable - 1,
+          0,
+          -Constant.numberOfGridColOfGridTable + 1,
+          -2
         ],
         [
-          -Constant.numberOfGridCol + 1,
+          -Constant.numberOfGridColOfGridTable,
+          -Constant.numberOfGridColOfGridTable,
+          -1,
+          1
+        ],
+        [
+          Constant.numberOfGridColOfGridTable,
+          Constant.numberOfGridColOfGridTable,
+          1,
+          -2 * Constant.numberOfGridColOfGridTable + 1
+        ],
+        [
+          -Constant.numberOfGridColOfGridTable + 1,
           0,
-          Constant.numberOfGridCol - 1,
-          2 * Constant.numberOfGridCol
+          Constant.numberOfGridColOfGridTable - 1,
+          2 * Constant.numberOfGridColOfGridTable
         ],
       ];
 
@@ -445,14 +482,16 @@ class MyTetrisProvider extends ChangeNotifier {
 
       for (int i = 0; i < block.length; i++) {
         if (block[i] < 0 ||
-            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
           return;
         }
       }
 
       var listCheck = [];
       for (var item in block) {
-        var temp = item % (Constant.numberOfGridCol);
+        var temp = item % (Constant.numberOfGridColOfGridTable);
         if (listCheck.contains(temp) == false) {
           listCheck.add(temp);
         }
@@ -470,27 +509,27 @@ class MyTetrisProvider extends ChangeNotifier {
       //      x
 
       if (rotate == 0) {
-        block[0] += (Constant.numberOfGridCol - 1);
+        block[0] += (Constant.numberOfGridColOfGridTable - 1);
         for (int i = 1; i < block.length; i++) {
           block[i] = block[i - 1] + 1;
         }
         rotate = 1;
       } else if (rotate == 1) {
-        block[0] -= (Constant.numberOfGridCol - 2);
+        block[0] -= (Constant.numberOfGridColOfGridTable - 2);
         for (int i = 1; i < block.length; i++) {
-          block[i] = block[i - 1] + Constant.numberOfGridCol;
+          block[i] = block[i - 1] + Constant.numberOfGridColOfGridTable;
         }
         rotate = 2;
       } else if (rotate == 2) {
-        block[0] += (2 * Constant.numberOfGridCol - 2);
+        block[0] += (2 * Constant.numberOfGridColOfGridTable - 2);
         for (int i = 1; i < block.length; i++) {
           block[i] = block[i - 1] + 1;
         }
         rotate = 3;
       } else {
-        block[0] -= (2 * Constant.numberOfGridCol - 1);
+        block[0] -= (2 * Constant.numberOfGridColOfGridTable - 1);
         for (int i = 1; i < block.length; i++) {
-          block[i] = block[i - 1] + Constant.numberOfGridCol;
+          block[i] = block[i - 1] + Constant.numberOfGridColOfGridTable;
         }
         rotate = 0;
       }
@@ -498,21 +537,24 @@ class MyTetrisProvider extends ChangeNotifier {
       //check valid block
       for (int i = 0; i < block.length; i++) {
         if (block[i] < 0 ||
-            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
           return;
         }
       }
 
       //vertical
-      if (block[1] - block[0] == Constant.numberOfGridCol) {
+      if (block[1] - block[0] == Constant.numberOfGridColOfGridTable) {
         if (block[0] < 0 ||
             block[block.length - 1] >=
-                Constant.numberOfGridRow * Constant.numberOfGridCol) return;
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) return;
       } else {
         //horizontal
-        int currentRow = block[0] ~/ Constant.numberOfGridCol;
+        int currentRow = block[0] ~/ Constant.numberOfGridColOfGridTable;
         for (int i = 1; i < block.length; i++) {
-          if (currentRow != (block[i] ~/ Constant.numberOfGridCol)) {
+          if (currentRow != (block[i] ~/ Constant.numberOfGridColOfGridTable)) {
             return;
           }
         }
@@ -522,10 +564,30 @@ class MyTetrisProvider extends ChangeNotifier {
       //      x
       //    x x
       List<List<int>> listRotate = [
-        [-1, -1, -Constant.numberOfGridCol + 1, -Constant.numberOfGridCol + 1],
-        [1, -Constant.numberOfGridCol + 2, 0, Constant.numberOfGridCol - 1],
-        [Constant.numberOfGridCol - 1, Constant.numberOfGridCol - 1, 1, 1],
-        [-Constant.numberOfGridCol + 1, 0, Constant.numberOfGridCol - 2, -1],
+        [
+          -1,
+          -1,
+          -Constant.numberOfGridColOfGridTable + 1,
+          -Constant.numberOfGridColOfGridTable + 1
+        ],
+        [
+          1,
+          -Constant.numberOfGridColOfGridTable + 2,
+          0,
+          Constant.numberOfGridColOfGridTable - 1
+        ],
+        [
+          Constant.numberOfGridColOfGridTable - 1,
+          Constant.numberOfGridColOfGridTable - 1,
+          1,
+          1
+        ],
+        [
+          -Constant.numberOfGridColOfGridTable + 1,
+          0,
+          Constant.numberOfGridColOfGridTable - 2,
+          -1
+        ],
       ];
 
       for (int i = 0; i < block.length; i++) {
@@ -535,14 +597,16 @@ class MyTetrisProvider extends ChangeNotifier {
 
       for (int i = 0; i < block.length; i++) {
         if (block[i] < 0 ||
-            block[i] >= Constant.numberOfGridRow * Constant.numberOfGridCol) {
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
           return;
         }
       }
 
       var listCheck = [];
       for (var item in block) {
-        var temp = item % (Constant.numberOfGridCol);
+        var temp = item % (Constant.numberOfGridColOfGridTable);
         if (listCheck.contains(temp) == false) {
           listCheck.add(temp);
         }

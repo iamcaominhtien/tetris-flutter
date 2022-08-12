@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../components/my_pixel.dart';
 
 class Constant {
-  static int numberOfGridRow = 20; //15 20
-  static int numberOfGridCol = 15; //10
+  static int numberOfGridRowOfGridTable = 20; //15 20
+  static int numberOfGridColOfGridTable = 15; //10
+  static int numberOfGridColOfShowNextBlock = 4;
+  static int numberOfGridRowOfShowNextBlock = 3;
 
   static List<List<int>> pieces = [
     // [4, 5,Constant.numberOfGridCol+5, Constant.numberOfGridCol+6],
@@ -16,32 +18,32 @@ class Constant {
     // [4, 5, 6, 15],
 
     [
-      4 - Constant.numberOfGridCol,
-      5 - Constant.numberOfGridCol,
+      4 - Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
       5,
       6
     ], //4, 5, 15, 16
     [
-      4 - Constant.numberOfGridCol,
-      5 - Constant.numberOfGridCol,
+      4 - Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
       4,
       5
     ], //4 5 14 15
     [
-      4 - 2 * Constant.numberOfGridCol,
-      4 - Constant.numberOfGridCol,
+      4 - 2 * Constant.numberOfGridColOfGridTable,
+      4 - Constant.numberOfGridColOfGridTable,
       4,
       5
     ], //4 14 24 25
     [
-      4 - 3 * Constant.numberOfGridCol,
-      4 - 2 * Constant.numberOfGridCol,
-      4 - Constant.numberOfGridCol,
+      4 - 3 * Constant.numberOfGridColOfGridTable,
+      4 - 2 * Constant.numberOfGridColOfGridTable,
+      4 - Constant.numberOfGridColOfGridTable,
       4
     ], //4, 14, 24, 34
     [
-      5 - 2 * Constant.numberOfGridCol,
-      5 - Constant.numberOfGridCol,
+      5 - 2 * Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
       4,
       5
     ], //5, 15, 24, 25
@@ -73,7 +75,7 @@ class Constant {
   ];
 
   static final List<MyPixel> originalGridTable = List<MyPixel>.generate(
-    Constant.numberOfGridRow * Constant.numberOfGridCol,
+    Constant.numberOfGridRowOfGridTable * Constant.numberOfGridColOfGridTable,
     (index) {
       return MyPixel(index: index);
     },

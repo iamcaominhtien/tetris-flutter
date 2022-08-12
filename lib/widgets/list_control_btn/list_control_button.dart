@@ -77,9 +77,14 @@ class _ListControlButtonState extends State<ListControlButton> {
                 ],
               ),
             ),
-            const Expanded(
+            Expanded(
               flex: 2,
-              child: ShowNextBlock(),
+              child: Center(
+                child: SizedBox(
+                  width: 30 * Constant.numberOfGridColOfShowNextBlock + 16 * 2,
+                  child: const ShowNextBlock(),
+                ),
+              ),
             ),
             Expanded(
               flex: 2,
