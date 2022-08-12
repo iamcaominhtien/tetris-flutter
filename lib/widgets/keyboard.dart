@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/widgets/play_sound.dart';
 import '../components/my_tetris_provider.dart';
-import '../constants/constants.dart';
 
 ///keyboard controller to play game
 class KeyboardController extends StatefulWidget {
@@ -53,7 +52,7 @@ class _KeyboardControllerState extends State<KeyboardController> {
       stopGame();
     } else if (key == LogicalKeyboardKey.keyS) {
       startGame();
-    } 
+    }
   }
 
   @override
@@ -138,7 +137,7 @@ class _KeyboardControllerState extends State<KeyboardController> {
 
   void recursiveGame() {
     Timer.periodic(
-      Constant.duration,
+      provider.level,
       (timer) {
         try {
           var hitFloor = provider.updateBlock();

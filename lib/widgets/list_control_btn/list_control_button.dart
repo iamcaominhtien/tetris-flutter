@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
@@ -34,6 +33,8 @@ class _ListControlButtonState extends State<ListControlButton> {
     provider = Provider.of<MyTetrisProvider>(context, listen: false);
     myContext = context;
     _sound = provider.sound;
+    provider.assignRestartGame(() => startGame());
+    provider.assignPauseGame(() => stopGame());
   }
 
   @override
@@ -175,6 +176,7 @@ class _ListControlButtonState extends State<ListControlButton> {
   }
 
   void startGame() {
+    debugPrint("start");
     _sound.start();
     if (controlTimer != null) {
       controlTimer!.cancel();
@@ -245,7 +247,7 @@ class _ListControlButtonState extends State<ListControlButton> {
 
   void recursiveGame() {
     Timer.periodic(
-      Constant.duration,
+      provider.level,
       (timer) {
         try {
           var hitFloor = provider.updateBlock();
@@ -295,18 +297,10 @@ class _ListControlButtonState extends State<ListControlButton> {
       showMyDialog();
       return;
     }
-    // setState(() {
-    //   iconPlayOrStop = Icons.pause;
-    // });
-    // recursiveGame();
   }
 
   void rotate() {
     _sound.rotate();
     provider.rotateBlock();
-  }
-
-  Future playMusic() async {
-    await SystemSound.play(SystemSoundType.click);
   }
 }

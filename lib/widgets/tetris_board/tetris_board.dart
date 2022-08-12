@@ -73,16 +73,23 @@ class _TetrisBoardState extends State<TetrisBoard> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: TetrisBoardWidget(
-                                label: "LEVEL",
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: const [
-                                    Text(
-                                      "1",
-                                      style: Constant.tetrisBoardTextStyle,
+                              child: GestureDetector(
+                                onTap: () => chooseLevel(context),
+                                child: Container(
+                                  color: Constant.primaryColor,
+                                  child: TetrisBoardWidget(
+                                    label: "LEVEL",
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          (Constant.listOfLevel.indexOf(provider.level)+1).toString(),
+                                          style: Constant.tetrisBoardTextStyle,
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -106,9 +113,9 @@ class _TetrisBoardState extends State<TetrisBoard> {
                                     ),
                                     AutoSizeText(
                                       Provider.of<MyTetrisProvider>(context,
-                                                listen: true)
-                                            .point
-                                            .toString(),
+                                              listen: true)
+                                          .point
+                                          .toString(),
                                       style: Constant.tetrisBoardTextStyle,
                                       maxLines: 1,
                                     )
@@ -124,5 +131,134 @@ class _TetrisBoardState extends State<TetrisBoard> {
             ),
           );
         });
+  }
+
+  void chooseLevel(BuildContext context) {
+    Duration level = provider.level;
+    provider.pauseGame();
+    showDialog<String>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ChooseLevelBoard(
+            level: level,
+            callBack: (Duration value) {
+              level = value;
+            },
+          );
+        }).then((chose) {
+      if (level != provider.level) {
+        provider.changeLevel(level);
+      }
+      debugPrint(level.toString());
+
+      if (chose == 'restart') {
+        provider.restartGame();
+      } else {
+        provider.pauseGame();
+      }
+    });
+  }
+}
+
+class ChooseLevelBoard extends StatefulWidget {
+  const ChooseLevelBoard({
+    Key? key,
+    required this.level,
+    required this.callBack,
+  }) : super(key: key);
+
+  final Duration level;
+  final Function(Duration value) callBack;
+
+  @override
+  State<ChooseLevelBoard> createState() => _ChooseLevelBoardState();
+}
+
+class _ChooseLevelBoardState extends State<ChooseLevelBoard> {
+  late Duration level;
+
+  @override
+  void initState() {
+    super.initState();
+    level = widget.level;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Center(
+          child: Text(
+        "CHỌN LEVEL",
+        style: TextStyle(
+          fontWeight: FontWeight.w900,
+        ),
+      )),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          RadioListTile<Duration>(
+            title: const Text('Level 1'),
+            value: Constant.listOfLevel[0],
+            groupValue: level,
+            onChanged: (value) {
+              setState(() {
+                level = value!;
+              });
+              widget.callBack(level);
+            },
+          ),
+          RadioListTile<Duration>(
+            title: const Text('Level 2'),
+            value: Constant.listOfLevel[1],
+            groupValue: level,
+            onChanged: (value) {
+              setState(() {
+                level = value!;
+              });
+              widget.callBack(level);
+            },
+          ),
+          RadioListTile<Duration>(
+            title: const Text('Level 3'),
+            value: Constant.listOfLevel[2],
+            groupValue: level,
+            onChanged: (value) {
+              setState(() {
+                level = value!;
+              });
+              widget.callBack(level);
+            },
+          )
+        ],
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.green),
+              ),
+              onPressed: () => Navigator.of(context).pop('continue'),
+              child: const Text(
+                "Tiếp tục",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop('restart');
+              },
+              child: const Text("Chơi lại"),
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

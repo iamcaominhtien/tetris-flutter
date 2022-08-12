@@ -13,9 +13,9 @@ class Constant {
     // [4, 4+Constant.numberOfGridCol, 4+2*Constant.numberOfGridCol, 5+2*Constant.numberOfGridCol],
     // [4, 4+Constant.numberOfGridCol, 4+2*Constant.numberOfGridCol, 4+3*Constant.numberOfGridCol],
     // [5, 5+Constant.numberOfGridCol, 4+2*Constant.numberOfGridCol, 5+2*Constant.numberOfGridCol],
-    // // [4, 14, 15, 25],
-    // [5, 15, 14, 24],
-    // [4, 5, 6, 15],
+    // [4,4+Constant.numberOfGridColOfGridTable,5+Constant.numberOfGridColOfGridTable,5+2*Constant.numberOfGridColOfGridTable]
+    // [5, 4+Constant.numberOfGridColOfGridTable, 5+Constant.numberOfGridColOfGridTable, 4+2*Constant.numberOfGridColOfGridTable],
+    // [4, 5, 6, 5+Constant.numberOfGridColOfGridTable],
 
     [
       4 - Constant.numberOfGridColOfGridTable,
@@ -47,9 +47,24 @@ class Constant {
       4,
       5
     ], //5, 15, 24, 25
-    // [-6, 4, 5, 15], //4, 14, 15, 25
-    // [-5, 5, 4, 14],
-    // [-6, -5, -4, 5],
+    [
+      4 - 2 * Constant.numberOfGridColOfGridTable,
+      4 - Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
+      5
+    ], //4, 14, 15, 25
+    [
+      5 - 2 * Constant.numberOfGridColOfGridTable,
+      4 - Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
+      4
+    ], //[5,14,15,24]
+    [
+      4 - Constant.numberOfGridColOfGridTable,
+      5 - Constant.numberOfGridColOfGridTable,
+      6 - Constant.numberOfGridColOfGridTable,
+      5
+    ], //[4,5,6,15]
   ];
 
   static const List<List<int>> showNextBlock = [
@@ -81,8 +96,17 @@ class Constant {
     },
   );
 
-  static const duration = Duration(milliseconds: 300);
+  // static const durationLv2 = Duration(milliseconds: 300);
 
+  // static const durationLv1 = Duration(milliseconds: 800);
+
+  // static const durationLv3 = Duration(milliseconds: 30);
+
+  static const listOfLevel = [
+    Duration(milliseconds: 800),
+    Duration(milliseconds: 300),
+    Duration(milliseconds: 30),
+  ];
   static const primaryColor = Colors.black;
 
   // ignore: constant_identifier_names

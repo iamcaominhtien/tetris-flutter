@@ -4,7 +4,6 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:tetris/components/my_pixel.dart';
 import '../constants/constants.dart';
 import '../widgets/play_sound.dart';
-// import '../widgets/grid_table.dart';
 
 class MyTetrisProvider extends ChangeNotifier {
   List<MyPixel> listOfSquare = List<MyPixel>.from(Constant.originalGridTable);
@@ -16,6 +15,9 @@ class MyTetrisProvider extends ChangeNotifier {
     mode: StopWatchMode.countUp,
   );
   final PlaySound sound = PlaySound();
+  var level = Constant.listOfLevel[0];
+  dynamic restartGame;
+  dynamic pauseGame;
 
   @override
   void dispose() async {
@@ -617,6 +619,178 @@ class MyTetrisProvider extends ChangeNotifier {
           return;
         }
       }
+    } else if (type == 5) {
+      // 5 -> x x
+      //    x x
+      List<List<int>> listRotate = [
+        [
+          Constant.numberOfGridColOfGridTable,
+          1,
+          Constant.numberOfGridColOfGridTable - 2,
+          -1
+        ],
+        [
+          -Constant.numberOfGridColOfGridTable - 1,
+          -2,
+          1 - Constant.numberOfGridColOfGridTable,
+          0
+        ],
+        [
+          1,
+          2 - Constant.numberOfGridColOfGridTable,
+          -1,
+          -Constant.numberOfGridColOfGridTable
+        ],
+        [
+          0,
+          Constant.numberOfGridColOfGridTable - 1,
+          2,
+          Constant.numberOfGridColOfGridTable + 1
+        ],
+      ];
+
+      for (int i = 0; i < block.length; i++) {
+        block[i] += listRotate[rotate][i];
+      }
+      rotate = (rotate + 1) % 4;
+
+      //Check valid block
+      for (int i = 0; i < block.length; i++) {
+        if (block[i] < 0 ||
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
+          return;
+        }
+      }
+
+      var listCheck = [];
+      for (var item in block) {
+        var temp = item % (Constant.numberOfGridColOfGridTable);
+        if (listCheck.contains(temp) == false) {
+          listCheck.add(temp);
+        }
+      }
+      listCheck.sort();
+
+      if (rotate % 2 != 0) {
+        for (int i = 1; i < listCheck.length; i++) {
+          if ((listCheck[i] - listCheck[i - 1]).abs() != 1) {
+            return;
+          }
+        }
+      } else {
+        if ((listCheck.last - listCheck.first).abs() != 1) return;
+      }
+    } else if (type == 6) {
+      // 6 -> x
+      //    x x
+      //    x
+
+      List<List<int>> listRotate = [
+        [
+          -1,
+          1 - Constant.numberOfGridColOfGridTable,
+          0,
+          2 - Constant.numberOfGridColOfGridTable
+        ],
+        [
+          2,
+          Constant.numberOfGridColOfGridTable,
+          1,
+          Constant.numberOfGridColOfGridTable - 1
+        ],
+        [
+          Constant.numberOfGridColOfGridTable - 2,
+          0,
+          Constant.numberOfGridColOfGridTable - 1,
+          1
+        ],
+        [
+          1 - Constant.numberOfGridColOfGridTable,
+          -1,
+          -Constant.numberOfGridColOfGridTable,
+          -2
+        ]
+      ];
+
+      for (int i = 0; i < block.length; i++) {
+        block[i] += listRotate[rotate][i];
+      }
+      rotate = (rotate + 1) % 4;
+
+      //Check valid block
+      for (int i = 0; i < block.length; i++) {
+        if (block[i] < 0 ||
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
+          return;
+        }
+      }
+
+      var listCheck = [];
+      for (var item in block) {
+        var temp = item % (Constant.numberOfGridColOfGridTable);
+        if (listCheck.contains(temp) == false) {
+          listCheck.add(temp);
+        }
+      }
+      listCheck.sort();
+
+      if (rotate % 2 != 0) {
+        for (int i = 1; i < listCheck.length; i++) {
+          if ((listCheck[i] - listCheck[i - 1]).abs() != 1) {
+            return;
+          }
+        }
+      } else {
+        if ((listCheck.last - listCheck.first).abs() != 1) return;
+      }
+    } else if (type == 7) {
+      // 7 -> x x x
+      //        x
+
+      List<List<int>> listRotate = [
+        [1 - Constant.numberOfGridColOfGridTable, -1, -1, 0],
+        [0, 0, 0, 1 - Constant.numberOfGridColOfGridTable],
+        [0, 1, 1, Constant.numberOfGridColOfGridTable - 1],
+        [Constant.numberOfGridColOfGridTable - 1, 0, 0, 0]
+      ];
+
+      for (int i = 0; i < block.length; i++) {
+        block[i] += listRotate[rotate][i];
+      }
+      rotate = (rotate + 1) % 4;
+
+      //Check valid block
+      for (int i = 0; i < block.length; i++) {
+        if (block[i] < 0 ||
+            block[i] >=
+                Constant.numberOfGridRowOfGridTable *
+                    Constant.numberOfGridColOfGridTable) {
+          return;
+        }
+      }
+
+      var listCheck = [];
+      for (var item in block) {
+        var temp = item % (Constant.numberOfGridColOfGridTable);
+        if (listCheck.contains(temp) == false) {
+          listCheck.add(temp);
+        }
+      }
+      listCheck.sort();
+
+      if (rotate % 2 == 0) {
+        for (int i = 1; i < listCheck.length; i++) {
+          if ((listCheck[i] - listCheck[i - 1]).abs() != 1) {
+            return;
+          }
+        }
+      } else {
+        if ((listCheck.last - listCheck.first).abs() != 1) return;
+      }
     }
 
     //Update block
@@ -634,5 +808,18 @@ class MyTetrisProvider extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  void changeLevel(Duration chosedLevel) {
+    level = chosedLevel;
+    notifyListeners();
+  }
+
+  void assignRestartGame(dynamic function) {
+    restartGame = function;
+  }
+
+  void assignPauseGame(dynamic function) {
+    pauseGame = function;
   }
 }
