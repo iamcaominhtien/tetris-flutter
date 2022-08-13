@@ -20,7 +20,7 @@ class _TetrisPageState extends State<TetrisPage> {
       child: MaterialApp(
         color: const Color(0xFF232323),
         debugShowCheckedModeBanner: false,
-        home: defaultTargetPlatform == TargetPlatform.android
+        home: defaultTargetPlatform == TargetPlatform.android ||defaultTargetPlatform == TargetPlatform.iOS
             ? const TetrisHomeForMobile()
             : const TetrixHomeForWindow(),
       ),

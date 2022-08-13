@@ -82,7 +82,7 @@ class _ListControlButtonState extends State<ListControlButton> {
               flex: 2,
               child: Center(
                 child: SizedBox(
-                  width: 30 * Constant.numberOfGridColOfShowNextBlock + 16 * 2,
+                  width: ((90-6*2)/3) * Constant.numberOfGridColOfShowNextBlock + 16 * 2,
                   child: const ShowNextBlock(),
                 ),
               ),
