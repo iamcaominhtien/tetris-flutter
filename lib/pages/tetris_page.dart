@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tetris/pages/tetris_home_mobile.dart';
 import 'package:tetris/pages/tetris_home_window.dart';
+
 import '../components/my_tetris_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart';
 
 class TetrisPage extends StatefulWidget {
   const TetrisPage({Key? key}) : super(key: key);
@@ -20,7 +21,8 @@ class _TetrisPageState extends State<TetrisPage> {
       child: MaterialApp(
         color: const Color(0xFF232323),
         debugShowCheckedModeBanner: false,
-        home: defaultTargetPlatform == TargetPlatform.android ||defaultTargetPlatform == TargetPlatform.iOS
+        home: defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS
             ? const TetrisHomeForMobile()
             : const TetrixHomeForWindow(),
       ),

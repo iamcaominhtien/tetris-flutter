@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tetris/widgets/keyboard.dart';
+
 import '../widgets/grid_table.dart';
 
 class TetrixHomeForWindow extends StatelessWidget {
@@ -17,7 +18,10 @@ class TetrixHomeForWindow extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               children: [
-                const SizedBox(width: 990,child: GridTable(),),
+                const SizedBox(
+                  width: 990,
+                  child: GridTable(),
+                ),
                 Expanded(
                   flex: 1,
                   child: Container(),

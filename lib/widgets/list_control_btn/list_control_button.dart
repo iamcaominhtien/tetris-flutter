@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/components/my_tetris_provider.dart';
 import 'package:tetris/constants/constants.dart';
 import 'package:tetris/widgets/list_control_btn/show_next_block.dart';
 import 'package:tetris/widgets/play_sound.dart';
+
 import 'control_button.dart';
 
 class ListControlButton extends StatefulWidget {
@@ -82,7 +84,9 @@ class _ListControlButtonState extends State<ListControlButton> {
               flex: 2,
               child: Center(
                 child: SizedBox(
-                  width: ((90-6*2)/3) * Constant.numberOfGridColOfShowNextBlock + 16 * 2,
+                  width: ((90 - 6 * 2) / 3) *
+                          Constant.numberOfGridColOfShowNextBlock +
+                      16 * 2,
                   child: const ShowNextBlock(),
                 ),
               ),

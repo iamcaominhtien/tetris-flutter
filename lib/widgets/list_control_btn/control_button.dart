@@ -52,7 +52,7 @@ class _ControlButtonState extends State<ControlButton> {
                   btnColor = widget.btnColor.withOpacity(0.3);
                 });
               }
-      
+
               try {
                 if (widget.callBack != null && widget.isActive == true) {
                   widget.callBack!();

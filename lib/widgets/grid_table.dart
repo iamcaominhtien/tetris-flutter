@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/constants/constants.dart';
+
 import '../components/my_tetris_provider.dart';
 
 class GridTable extends StatefulWidget {

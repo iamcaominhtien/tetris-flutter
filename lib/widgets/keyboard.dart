@@ -1,8 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tetris/widgets/play_sound.dart';
+
 import '../components/my_tetris_provider.dart';
 
 ///keyboard controller to play game
