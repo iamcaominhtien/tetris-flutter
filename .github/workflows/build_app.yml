@@ -1,0 +1,65 @@
+name: Build Mobile App
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: write-all
+
+jobs:
+  build:
+    # This job will run on ubuntu virtual machine
+    runs-on: ubuntu-latest
+    steps:
+      # Setup Java environment in order to build the Android app.
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      # Setup the flutter environment.
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable' # 'dev', 'alpha', default to: 'stable'
+          # flutter-version: '1.12.x' # you can also specify exact version of flutter
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build application
+        run: flutter build apk --release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Gcloud Token Local
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Calculate version numbers
+        id: calc_version
+        run: |
+          echo "version_major=$((${{ github.run_number }} / 10))" >> $GITHUB_ENV
+          echo "version_minor=$((${{ github.run_number }} % 10))" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-v1.${{ env.version_major }}.${{ env.version_minor }}
+          release_name: tetris release-v1.${{ env.version_major }}.${{ env.version_minor }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/app/outputs/flutter-apk/app-release.apk
+          asset_name: tetris.apk
+          asset_content_type: application/vnd.android.package-archive
