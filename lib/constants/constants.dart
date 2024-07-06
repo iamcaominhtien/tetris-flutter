@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../components/my_pixel.dart';
 
 class Constant {
-  static int numberOfGridRowOfGridTable = 20; //15 20
+  static int numberOfGridRowOfGridTable = 25; //15 20
   static int numberOfGridColOfGridTable = 15; //10
   static int numberOfGridColOfShowNextBlock = 4;
   static int numberOfGridRowOfShowNextBlock = 3;
@@ -90,7 +90,7 @@ class Constant {
     Colors.deepPurple,
   ];
 
-  static final List<MyPixel> originalGridTable = List<MyPixel>.generate(
+  static List<MyPixel> get originalGridTable => List<MyPixel>.generate(
     Constant.numberOfGridRowOfGridTable * Constant.numberOfGridColOfGridTable,
     (index) {
       return MyPixel(index: index);

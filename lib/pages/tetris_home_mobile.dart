@@ -6,20 +6,20 @@ import '../widgets/tetris_board/tetris_board.dart';
 
 class TetrisHomeForMobile extends StatelessWidget {
   const TetrisHomeForMobile({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
+      body: const SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
-            children: const [
+            children: [
               TetrisBoard(),
-              GridTable(),
+              Expanded(child: GridTable()),
             ],
           ),
         ),

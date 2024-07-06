@@ -19,46 +19,47 @@ class _GridTableState extends State<GridTable> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        heightOfGrid = (((constraints.maxWidth - 30) /
-                        Constant.numberOfGridColOfGridTable) *
-                    Constant.numberOfGridRowOfGridTable +
-                26 * 2)
-            .ceilToDouble();
-        return Center(
-          child: SizedBox(
-            width: double.infinity,
-            height: heightOfGrid,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 13.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 15.0, vertical: 13.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 13),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          var sizeOfCell = ((constraints.maxWidth - 30.0) /
+              Constant.numberOfGridColOfGridTable);
+          Constant.numberOfGridRowOfGridTable =
+              ((constraints.maxHeight - 26) / sizeOfCell).floor();
+          heightOfGrid = Constant.numberOfGridRowOfGridTable * sizeOfCell;
+          Provider.of<MyTetrisProvider>(context, listen: false)
+              .resetGridTableToOriginal(false);
+          return Center(
+            child: Container(
+              height: heightOfGrid + 26,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 13.0),
+              decoration: BoxDecoration(
+                color: Constant.primaryColor,
+                // color: Colors.grey,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Constant.primaryColor,
-                  // color: Colors.grey,
-                  borderRadius: BorderRadius.circular(10.0),
+                  // color: const Color.fromARGB(137, 29, 27, 27),
+                  color: const Color.fromARGB(135, 68, 62, 62),
+                  border: Border.all(color: Colors.white, width: 1.0),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    // color: const Color.fromARGB(137, 29, 27, 27),
-                    color: const Color.fromARGB(135, 68, 62, 62),
-                    border: Border.all(color: Colors.white, width: 1.0),
-                  ),
-                  child: Consumer<MyTetrisProvider>(
-                    builder: (context, provider, child) => GridView.count(
+                child: Consumer<MyTetrisProvider>(
+                  builder: (context, provider, child) {
+                    return GridView.count(
                       physics: const NeverScrollableScrollPhysics(),
                       crossAxisCount: Constant.numberOfGridColOfGridTable,
                       children: provider.listOfSquare,
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

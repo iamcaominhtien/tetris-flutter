@@ -52,10 +52,12 @@ class MyTetrisProvider extends ChangeNotifier {
     nextBlock.clear();
   }
 
-  void resetGridTableToOriginal() {
+  void resetGridTableToOriginal([bool notify = true]) {
     listOfSquare.clear();
     listOfSquare = List<MyPixel>.from(Constant.originalGridTable);
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void resetGridTable() {

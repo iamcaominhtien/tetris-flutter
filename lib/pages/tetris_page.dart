@@ -7,7 +7,7 @@ import 'package:tetris/pages/tetris_home_window.dart';
 import '../components/my_tetris_provider.dart';
 
 class TetrisPage extends StatefulWidget {
-  const TetrisPage({Key? key}) : super(key: key);
+  const TetrisPage({super.key});
 
   @override
   State<TetrisPage> createState() => _TetrisPageState();
