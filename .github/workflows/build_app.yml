@@ -3,7 +3,7 @@ name: Build Mobile App
 on:
   push:
     branches:
-      - main
+      - master
 
 permissions: write-all
 
