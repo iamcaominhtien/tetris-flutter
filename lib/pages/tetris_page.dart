@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tetris/pages/tetris_home_mobile.dart';
 import 'package:tetris/pages/tetris_home_window.dart';
 
+import '../components/gesture_signal.dart';
 import '../components/my_tetris_provider.dart';
 
 class TetrisPage extends StatefulWidget {
@@ -16,8 +17,15 @@ class TetrisPage extends StatefulWidget {
 class _TetrisPageState extends State<TetrisPage> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MyTetrisProvider>(
-      create: (context) => MyTetrisProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MyTetrisProvider>(
+          create: (_) => MyTetrisProvider(),
+        ),
+        ChangeNotifierProvider<GestureSignalProvider>(
+          create: (_) => GestureSignalProvider(),
+        )
+      ],
       child: MaterialApp(
         color: const Color(0xFF232323),
         debugShowCheckedModeBanner: false,

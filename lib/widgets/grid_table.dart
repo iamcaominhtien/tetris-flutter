@@ -1,14 +1,31 @@
 // import 'package:flutter/foundation.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tetris/components/gesture_signal.dart';
 import 'package:tetris/constants/constants.dart';
 
 import '../components/my_tetris_provider.dart';
 
-class GridTable extends StatelessWidget {
+class GridTable extends StatefulWidget {
   const GridTable({
     super.key,
   });
+
+  @override
+  State<GridTable> createState() => _GridTableState();
+}
+
+class _GridTableState extends State<GridTable> {
+  Timer? _onLongPressTimer;
+  late final gestureSignalProvider = context.read<GestureSignalProvider>();
+
+  @override
+  void dispose() {
+    _onLongPressTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +37,8 @@ class GridTable extends StatelessWidget {
               Constant.numberOfGridColOfGridTable);
           Constant.numberOfGridRowOfGridTable =
               ((constraints.maxHeight - 26) / sizeOfCell).floor();
-          double heightOfGrid = Constant.numberOfGridRowOfGridTable * sizeOfCell;
+          double heightOfGrid =
+              Constant.numberOfGridRowOfGridTable * sizeOfCell;
           Provider.of<MyTetrisProvider>(context, listen: false)
               .resetGridTableToOriginal(false);
           return Center(
@@ -43,10 +61,17 @@ class GridTable extends StatelessWidget {
                   padding: const EdgeInsets.all(1.0),
                   child: Consumer<MyTetrisProvider>(
                     builder: (context, provider, child) {
-                      return GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: Constant.numberOfGridColOfGridTable,
-                        children: provider.listOfSquare,
+                      return GestureDetector(
+                        onTapDown: (details) => onPressDown(details, context),
+                        onLongPressStart: (details) =>
+                            onLongPressDown(details, context),
+                        // onTapUp: onPressUp,
+                        onLongPressUp: onLongPressUp,
+                        child: GridView.count(
+                          physics: const NeverScrollableScrollPhysics(),
+                          crossAxisCount: Constant.numberOfGridColOfGridTable,
+                          children: provider.listOfSquare,
+                        ),
                       );
                     },
                   ),
@@ -57,5 +82,79 @@ class GridTable extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void onPressUp(LongPressEndDetails details) {
+    print('onLongPressUp');
+  }
+
+  String? detectSize(details, context) {
+    // find the position of press
+    final RenderBox box = context.findRenderObject();
+    final Offset localOffset = box.globalToLocal(details.globalPosition);
+    final double x = localOffset.dx;
+    final double y = localOffset.dy;
+
+    // get size of table
+    final maxWidth = box.size.width;
+    final maxHeight = box.size.height;
+
+    // get middle of table
+    final middleX = maxWidth / 2;
+
+    // area of right side
+    if (x > middleX && y < maxHeight * 0.7) {
+      return 'r';
+    }
+    // area of left side
+    if (x < middleX && y < maxHeight * 0.7) {
+      return 'l';
+    }
+    //area of bottom side
+    if (y >= maxHeight * 0.7) {
+      return 'b';
+    }
+
+    return null;
+  }
+
+  void onPressDown(details, context) {
+    gestureSignalProvider.setSignal(detectSize(details, context));
+    // switch (detectSize(details, context)) {
+    //   case 'l':
+    //     print('move left');
+    //     break;
+    //   case 'r':
+    //     print('move right');
+    //     break;
+    //   case 'b':
+    //     print('move down');
+    //     break;
+    // }
+  }
+
+  void onLongPressDown(LongPressStartDetails details, context) {
+    _onLongPressTimer = Timer.periodic(
+      const Duration(milliseconds: 100),
+      (_) {
+        gestureSignalProvider.setSignal(detectSize(details, context));
+        // switch (detectSize(details, context)) {
+        //   case 'l':
+        //     print('move left');
+        //     break;
+        //   case 'r':
+        //     print('move right');
+        //     break;
+        //   case 'b':
+        //     print('move down');
+        //     break;
+        // }
+      },
+    );
+  }
+
+  void onLongPressUp() {
+    _onLongPressTimer?.cancel();
+    // print('stop moving');
   }
 }

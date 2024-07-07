@@ -7,13 +7,15 @@ import 'package:tetris/constants/constants.dart';
 import 'package:tetris/widgets/list_control_btn/show_next_block.dart';
 import 'package:tetris/widgets/play_sound.dart';
 
+import '../../components/gesture_signal.dart';
 import 'control_button.dart';
 
 class ListControlButton extends StatefulWidget {
   const ListControlButton({
     required this.pageContext,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
   final BuildContext pageContext;
 
   @override
@@ -29,6 +31,8 @@ class _ListControlButtonState extends State<ListControlButton> {
   bool isActive = false; //turn off all ControlButton (except play button)
   late final PlaySound _sound;
 
+  late final GestureSignalProvider gestureSignalProvider;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +41,15 @@ class _ListControlButtonState extends State<ListControlButton> {
     _sound = provider.sound;
     provider.assignRestartGame(() => startGame());
     provider.assignPauseGame(() => stopGame());
+
+    gestureSignalProvider = context.read<GestureSignalProvider>();
+    gestureSignalProvider.addListener(gestureSignal);
+  }
+
+  @override
+  void dispose() {
+    gestureSignalProvider.removeListener(gestureSignal);
+    super.dispose();
   }
 
   @override
@@ -291,6 +304,11 @@ class _ListControlButtonState extends State<ListControlButton> {
     provider.updateBlock(direction: 'r');
   }
 
+  void moveToBottom() {
+    _sound.move();
+    provider.updateBlock(direction: 'b');
+  }
+
   void moveToBottomRightNow() {
     _sound.fall();
     var isContinue = provider.moveBlockToButtonRightNow();
@@ -306,5 +324,19 @@ class _ListControlButtonState extends State<ListControlButton> {
   void rotate() {
     _sound.rotate();
     provider.rotateBlock();
+  }
+
+  void gestureSignal() {
+    switch (gestureSignalProvider.signal) {
+      case 'l':
+        moveToLeft();
+        break;
+      case 'r':
+        moveToRight();
+        break;
+      case 'b':
+        moveToBottom();
+        break;
+    }
   }
 }
