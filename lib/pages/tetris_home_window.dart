@@ -3,10 +3,10 @@ import 'package:tetris/widgets/keyboard.dart';
 
 import '../widgets/grid_table.dart';
 
-class TetrixHomeForWindow extends StatelessWidget {
-  const TetrixHomeForWindow({
-    Key? key,
-  }) : super(key: key);
+class TetrisHomeForWindow extends StatelessWidget {
+  const TetrisHomeForWindow({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

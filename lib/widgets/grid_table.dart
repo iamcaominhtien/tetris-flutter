@@ -5,17 +5,10 @@ import 'package:tetris/constants/constants.dart';
 
 import '../components/my_tetris_provider.dart';
 
-class GridTable extends StatefulWidget {
+class GridTable extends StatelessWidget {
   const GridTable({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<GridTable> createState() => _GridTableState();
-}
-
-class _GridTableState extends State<GridTable> {
-  double heightOfGrid = 420.0;
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +20,7 @@ class _GridTableState extends State<GridTable> {
               Constant.numberOfGridColOfGridTable);
           Constant.numberOfGridRowOfGridTable =
               ((constraints.maxHeight - 26) / sizeOfCell).floor();
-          heightOfGrid = Constant.numberOfGridRowOfGridTable * sizeOfCell;
+          double heightOfGrid = Constant.numberOfGridRowOfGridTable * sizeOfCell;
           Provider.of<MyTetrisProvider>(context, listen: false)
               .resetGridTableToOriginal(false);
           return Center(
@@ -46,14 +39,17 @@ class _GridTableState extends State<GridTable> {
                   color: const Color.fromARGB(135, 68, 62, 62),
                   border: Border.all(color: Colors.white, width: 1.0),
                 ),
-                child: Consumer<MyTetrisProvider>(
-                  builder: (context, provider, child) {
-                    return GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: Constant.numberOfGridColOfGridTable,
-                      children: provider.listOfSquare,
-                    );
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Consumer<MyTetrisProvider>(
+                    builder: (context, provider, child) {
+                      return GridView.count(
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: Constant.numberOfGridColOfGridTable,
+                        children: provider.listOfSquare,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

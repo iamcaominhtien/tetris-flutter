@@ -24,7 +24,7 @@ class _TetrisPageState extends State<TetrisPage> {
         home: defaultTargetPlatform == TargetPlatform.android ||
                 defaultTargetPlatform == TargetPlatform.iOS
             ? const TetrisHomeForMobile()
-            : const TetrixHomeForWindow(),
+            : const TetrisHomeForWindow(),
       ),
     );
   }
